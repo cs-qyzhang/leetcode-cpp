@@ -1,0 +1,149 @@
+/*
+ * @lc app=leetcode.cn id=10 lang=cpp
+ *
+ * [10] 正则表达式匹配
+ *
+ * https://leetcode-cn.com/problems/regular-expression-matching/description/
+ *
+ * algorithms
+ * Hard (29.66%)
+ * Likes:    1339
+ * Dislikes: 0
+ * Total Accepted:    94.8K
+ * Total Submissions: 319.4K
+ * Testcase Example:  '"aa"\n"a"'
+ *
+ * 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+ *
+ * '.' 匹配任意单个字符
+ * '*' 匹配零个或多个前面的那一个元素
+ *
+ *
+ * 所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+ *
+ * 说明:
+ *
+ *
+ * s 可能为空，且只包含从 a-z 的小写字母。
+ * p 可能为空，且只包含从 a-z 的小写字母，以及字符 . 和 *。
+ *
+ *
+ * 示例 1:
+ *
+ * 输入:
+ * s = "aa"
+ * p = "a"
+ * 输出: false
+ * 解释: "a" 无法匹配 "aa" 整个字符串。
+ *
+ *
+ * 示例 2:
+ *
+ * 输入:
+ * s = "aa"
+ * p = "a*"
+ * 输出: true
+ * 解释: 因为 '*' 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 'a'。因此，字符串 "aa" 可被视为 'a' 重复了一次。
+ *
+ *
+ * 示例 3:
+ *
+ * 输入:
+ * s = "ab"
+ * p = ".*"
+ * 输出: true
+ * 解释: ".*" 表示可匹配零个或多个（'*'）任意字符（'.'）。
+ *
+ *
+ * 示例 4:
+ *
+ * 输入:
+ * s = "aab"
+ * p = "c*a*b"
+ * 输出: true
+ * 解释: 因为 '*' 表示零个或多个，这里 'c' 为 0 个, 'a' 被重复一次。因此可以匹配字符串 "aab"。
+ *
+ *
+ * 示例 5:
+ *
+ * 输入:
+ * s = "mississippi"
+ * p = "mis*is*p*."
+ * 输出: false
+ *
+ */
+
+#include <iostream>
+using namespace std;
+
+// @lc code=start
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.size();
+        int n = p.size();
+
+        auto matches = [&](int i, int j) {
+            if (i == 0) {
+                return false;
+            }
+            if (p[j - 1] == '.') {
+                return true;
+            }
+            return s[i - 1] == p[j - 1];
+        };
+
+        vector<vector<int>> f(m + 1, vector<int>(n + 1));
+        f[0][0] = true;
+        for (int i = 0; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (p[j - 1] == '*') {
+                    f[i][j] |= f[i][j - 2];
+                    if (matches(i, j - 1)) {
+                        f[i][j] |= f[i - 1][j];
+                    }
+                }
+                else {
+                    if (matches(i, j)) {
+                        f[i][j] |= f[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+        return f[m][n];
+        // if (s == "" && p == "")
+        //     return true;
+        // if (p == "")
+        //     return false;
+        // if (s == "") {
+        //     if (p.size() >= 2 && p[1] == '*')
+        //         return isMatch(s, p.substr(2));
+        //     else
+        //         return false;
+        // }
+
+        // int s_i = 0;
+        // int p_i = 0;
+        // while (s_i < s.size() && p_i < p.size()) {
+        //     if (p_i + 1 < p.size() && p[p_i + 1] == '*') {
+        //         if (p[p_i] == '.' || p[p_i] == s[s_i])
+        //             return isMatch(s.substr(s_i + 1), p.substr(p_i)) ||
+        //                    isMatch(s.substr(s_i), p.substr(p_i + 2));
+        //         else
+        //             return isMatch(s.substr(s_i), p.substr(p_i + 2));
+        //     } else if (p[p_i] == '.' || p[p_i] == s[s_i]) {
+        //         p_i++;
+        //         s_i++;
+        //     } else {
+        //         return false;
+        //     }
+        // }
+        // return isMatch(s.substr(s_i), p.substr(p_i));
+    }
+};
+// @lc code=end
+
+int main(void) {
+    Solution s;
+    cout << s.isMatch("abcd", "ab*d*e*c*d*.*") << endl;
+}
