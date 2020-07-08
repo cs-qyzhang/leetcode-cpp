@@ -1,0 +1,18 @@
+{
+    "C_Cpp.default.forcedInclude": [
+        "/usr/include/x86_64-linux-gnu/c++/9/bits/stdc++.h",
+        "/usr/include/c++/9/backward",
+        "/usr/lib/gcc/x86_64-linux-gnu/9/include",
+        "/usr/local/include",
+        "/usr/include/x86_64-linux-gnu",
+        "/usr/include",
+    ],
+    "files.associations": {
+        "*.h": "cpp",
+        "*.sty": "latex-expl3",
+        "vector": "cpp",
+        "iostream": "cpp",
+        "unordered_set": "cpp"
+    },
+    "trailing-spaces.trimOnSave": true
+}
